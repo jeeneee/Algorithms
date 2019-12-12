@@ -1,0 +1,111 @@
+//
+//  11286_절댓값 힙.cpp
+//  Algorithms-CPP
+//
+//  Created by 장우진 on 2019/12/09.
+//  Copyright © 2019 장우진. All rights reserved.
+//
+
+#include <iostream>
+using namespace std;
+
+class Heap {
+private:
+    int *arr;
+    int capacity;
+    int current_size;
+    
+    void swap(int &a, int &b) {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    inline int abs(int x) {
+        return x < 0 ? -x : x;
+    }
+    
+public:
+    Heap(int capacity) : capacity(capacity), current_size(0) {
+        arr = new int[capacity];
+    }
+    bool empty() { return current_size == 0; }
+    void insert(int x) {
+        if (current_size >= capacity) return;
+        
+        int child_pos = current_size;
+        arr[current_size++] = x;
+        int parent_pos = (child_pos - 1) / 2;
+        
+        while (abs(arr[parent_pos]) >= abs(arr[child_pos])) {
+            if (abs(arr[parent_pos]) == abs(arr[child_pos]) &&
+                arr[parent_pos] <= arr[child_pos])
+                break;
+            swap(arr[parent_pos], arr[child_pos]);
+            child_pos = parent_pos;
+            parent_pos = (child_pos - 1) / 2;
+        }
+    }
+    void minHeap(int pos, bool is_sub) {
+        if (pos == -1) return;
+        
+        int small_pos = 0;
+        int left_pos = 2 * pos + 1;
+        int right_pos = 2 * pos + 2;
+        // 왼쪽 자식이 있다면
+        if (left_pos <= current_size) {
+            // 오른쪽 자식도 있다면
+            if (right_pos <= current_size) {
+                if (abs(arr[left_pos]) < abs(arr[right_pos]))
+                    small_pos = left_pos;
+                else if (abs(arr[left_pos]) == abs(arr[right_pos]) &&
+                         arr[left_pos] < arr[right_pos])
+                    small_pos = left_pos;
+                else
+                    small_pos = right_pos;
+            } else
+                small_pos = left_pos;
+            // 자식이 부모보다 작다면
+            if (abs(arr[pos]) > abs(arr[small_pos])) {
+                swap(arr[pos], arr[small_pos]);
+                minHeap(small_pos, true);
+            } else if (abs(arr[pos]) == abs(arr[small_pos]) &&
+                       arr[pos] > arr[small_pos]) {
+                swap(arr[pos], arr[small_pos]);
+                minHeap(small_pos, true);
+            }
+        }
+        // 자식이 없다면
+        else return;
+        if (is_sub == false)
+            minHeap(pos-1, false);
+    }
+    int pop() {
+        // 비었으면 0 반환.
+        if (empty()) return 0;
+        // 최솟값은 맨 앞에 있다.
+        int min_value = arr[0];
+        // 맨 끝의 값을 맨 앞으로 가져온다.
+        arr[0] = arr[current_size-1];
+        current_size--;
+        // 첫 번째 원소에 대한 정렬
+        minHeap(0, false);
+        return min_value;
+    }
+    ~Heap() {
+        delete []arr;
+    }
+};
+
+int main() {
+    int n, x;
+    scanf("%d", &n);
+    Heap h(n);
+    while (n--) {
+        scanf("%d", &x);
+        if (x == 0)
+            printf("%d\n", h.pop());
+        else
+            h.insert(x);
+    }
+    return 0;
+}
