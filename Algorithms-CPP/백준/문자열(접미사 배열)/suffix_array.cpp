@@ -25,6 +25,7 @@ struct SuffixComparator {
 	}
 };
 
+// O(N^2logN)
 // s 의 접미사 배열을 계산한다
 vector<int> getSuffixArrayNaive(const string& s) {
 	// 접미사 시작 위치를 담은 배열을 만든다
@@ -52,6 +53,7 @@ struct Comparator {
 };
 
 
+// 맨버-마이어스의 알고리즘 O(Nlg^2N)
 // s 의 접미사 배열을 계산한다
 vector<int> getSuffixArray(const string& s) {
 	int n = (int)s.size();
