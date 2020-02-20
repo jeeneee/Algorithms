@@ -96,3 +96,55 @@ int main() {
     }
     return 0;
 }
+
+// 배열 버전
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void push_heap(vector<int>& heap, int newValue) {
+	heap.push_back(newValue);
+	int idx = (int)heap.size() - 1;
+	while (idx > 0 && heap[(idx - 1) / 2] < heap[idx]) {
+		swap(heap[(idx - 1) / 2], heap[idx]);
+		idx = (idx - 1) / 2;
+	}
+}
+
+void pop_heap(vector<int>& heap) {
+	heap[0] = heap.back();
+	heap.pop_back();
+	int here = 0;
+	while (true) {
+		int left = here * 2 + 1, right = here * 2 + 2;
+		if (left >= heap.size()) break;
+		
+		int next = here;
+		if (heap[next] < heap[left])
+			next = left;
+		if (right < heap.size() && heap[next] < heap[right])
+			next = right;
+		if (next == here) break;
+		
+		swap(heap[here], heap[next]);
+		here = next;
+	}
+}
+
+const void print_heap(vector<int>& heap) {
+	for (auto& a : heap)
+		cout << a << ' ';
+	cout << endl;
+}
+
+int main() {
+	vector<int> heap;
+	push_heap(heap, 3);
+	push_heap(heap, 2);
+	push_heap(heap, 7);
+	print_heap(heap);
+	pop_heap(heap);
+	print_heap(heap);
+	return 0;
+}
