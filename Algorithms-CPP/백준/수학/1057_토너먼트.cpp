@@ -6,4 +6,22 @@
 //  Copyright © 2020 장우진. All rights reserved.
 //
 
-#include <stdio.h>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+using namespace std;
+
+int main() {
+	int n, a, b, round = 1;
+	cin >> n >> a >> b;
+	while (n > 2) {
+		a = (a+1)/2;
+		b = (b+1)/2;
+		n = (n+1)/2;
+		if (a == b)
+			break;
+		++round;
+	}
+	cout << round << endl;
+	return 0;
+}
