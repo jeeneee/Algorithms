@@ -15,12 +15,13 @@ bool visited[MAX + 1];
 
 int main() {
     int f, s, g, u, d;
-    queue<int> q;
     cin >> f >> s >> g >> u >> d;
     
     int cnt = 0;
     bool flag = false;
+	queue<int> q;
     q.push(s);
+	visited[s] = true;
     while (!q.empty()) {
         int size = (int)q.size();
         for (int i = 0; i < size; ++i) {
@@ -30,13 +31,14 @@ int main() {
                 flag = true;
                 break;
             }
-            if (!visited[cur]) {
-                visited[cur] = true;
-                if (cur + u <= MAX)
-                    q.push(cur + u);
-                if (cur - d >= 0)
-                    q.push(cur - d);
-            }
+			if (!visited[cur+u] && cur + u <= f) {
+				visited[cur+u] = true;
+				q.push(cur + u);
+			}
+			if (!visited[cur-d] && cur - d >= 1) {
+				visited[cur-d] = true;
+				q.push(cur - d);
+			}
         }
         if (flag)
             break;
