@@ -42,45 +42,48 @@ void dfs(int idx, int cnt) {
 		vector<pii> v = enemy;
 		// bfs
 		while (!v.empty()) {
-			// attack
-			vector<int> target;
+			// 적이 없어질 때까지 공격한다.
+			vector<int> target; // 죽은 적들의 좌표를 저장
 			int enemy_y = v[0].y;
 			int idx = 0;
 			for (int i = 0; i < archer.size(); ++i) {
-				int distance = dist(archer[i], v[0]);
-				for (int j = 1; j < v.size(); ++j) {
+				int distance = dist(archer[i], v[0]); // 첫 번째 적과 궁수와의 거리
+				for (int j = 1; j < v.size(); ++j) { // 나머지 적과 궁수와의 거리 비교
 					int temp_distance = dist(archer[i], v[j]);
-					if (temp_distance < distance) {
+					if (temp_distance < distance) { // 작으면 업데이트
 						distance = temp_distance;
 						enemy_y = v[j].y;
-						idx = j;
+						idx = j; // 몇 번째 적인지 저장한다.
 					}
+					// 거리가 같고 더 좌측에 있다면 업데이트
 					else if (temp_distance == distance && v[j].y < enemy_y) {
 						enemy_y = v[j].y;
 						idx = j;
 					}
 				}
+				// 사정거리 안에 있다면 타겟에 넣어준다.
 				if (distance <= d)
 					target.push_back(idx);
 			}
-			vector<pii> temp_v;
+			vector<pii> temp_v; // 임시 적
 			for (int i = 0; i < v.size(); ++i) {
 				bool died = false;
 				for (auto& t: target)
-					if (t == i) {
+					if (t == i) { // 타겟에 있는 적은 죽인다. 즉, v에 넣지 않는다.
 						died = true;
 						res++;
 						break;
 					}
+				// 한 칸 내렸을 때 궁수에 닿지 않는 적은 넣어준다.
 				if (!died && v[i].x < n-1)
 					temp_v.push_back( {v[i].x+1, v[i].y} );
 			}
-			v = temp_v;
+			v = temp_v; // 교환
 		}
 		ans = max(ans, res);
 		return;
 	}
-	// comb
+	// 조합
 	for (int j = idx; j < m; ++j) {
 		archer.push_back( {n, j} );
 		dfs(j+1, cnt+1);
