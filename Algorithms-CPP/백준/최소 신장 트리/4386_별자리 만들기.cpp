@@ -4,8 +4,10 @@
 #include<math.h>
 using namespace std;
 
-int n;   float x, y;
-vector<pair<float, pair<int, int>>> v;    float as[101][2];
+int n;
+float x, y;
+vector<pair<float, pair<int, int>>> v;
+float as[101][2];
 int par[101];
 
 
