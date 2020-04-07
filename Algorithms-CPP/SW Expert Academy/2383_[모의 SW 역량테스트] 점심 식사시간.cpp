@@ -14,68 +14,40 @@
  */
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <algorithm>
 using namespace std;
 
 struct Person {
-	int x, y, d1, d2;
+	int x, y;
+	int t1, t2;
 };
 struct Stair {
-	int x, y, t;
+	int x, y;
+	int t;
 };
-bool cmp1(const Person& a, const Person& b) {
-	return a.d1 < b.d1;
-}
-bool cmp2(const Person& a, const Person& b) {
-	return a.d2 < b.d2;
-}
+
 vector<Person> person;
 vector<Stair> stair;
 int toWhere[10];
-int ans;
+int n, ans;
 
-int getTime1(vector<Person>& v) {
+int down(vector<int>& v, int numStair) {
 	if (v.empty()) return 0;
 	
-	sort(v.begin(), v.end(), cmp1);
+	sort(v.begin(), v.end());
 	int used[3] = {0, };
-	int time = v[0].d1;
-	
+	int time = v[0];
 	while (1) {
 		for (int i = 0; i < v.size(); ++i) {
-			if (v[i].d1 == 0 || v[i].d1 > time) continue;
+			if (v[i] == -1) continue;
+			else if (v[i] > time) break;
 			for (int j = 0; j < 3; ++j) {
 				if (used[j] <= 0) {
-					used[j] = stair[0].t;
-					v[i].d1 = 0;
 					if (i == v.size() - 1)
-						return time + stair[0].t + 1;
-					break;
-				}
-			}
-		}
-		for (int i = 0; i < 3; ++i)
-			used[i]--;
-		time++;
-	}
-}
-
-int getTime2(vector<Person>& v) {
-	if (v.empty()) return 0;
-	
-	sort(v.begin(), v.end(), cmp2);
-	int used[3] = {0, };
-	int time = v[0].d2;
-	
-	while (1) {
-		for (int i = 0; i < v.size(); ++i) {
-			if (v[i].d2 == 0 || v[i].d2 > time) continue;
-			for (int j = 0; j < 3; ++j) {
-				if (used[j] <= 0) {
-					used[j] = stair[1].t;
-					v[i].d2 = 0;
-					if (i == v.size() - 1)
-						return time + stair[1].t + 1;
+						return time + stair[numStair].t + 1;
+					used[j] = stair[numStair].t;
+					v[i] = -1;
 					break;
 				}
 			}
@@ -88,12 +60,12 @@ int getTime2(vector<Person>& v) {
 
 void dfs(int idx) {
 	if (idx == person.size()) {
-		vector<Person> v1, v2;
+		vector<int> v1, v2;
 		for (int i = 0; i < person.size(); ++i) {
-			if (toWhere[i] == 1) v1.push_back(person[i]);
-			else if (toWhere[i] == 2) v2.push_back(person[i]);
+			if (toWhere[i] == 1) v1.push_back(person[i].t1);
+			else v2.push_back(person[i].t2);
 		}
-		ans = min(ans, max(getTime1(v1), getTime2(v2)));
+		ans = min(ans, max(down(v1, 0), down(v2, 1)));
 		return;
 	}
 	toWhere[idx] = 1;
@@ -104,30 +76,25 @@ void dfs(int idx) {
 
 int main() {
 	int T;
-	cin >> T;
+	scanf("%d", &T);
 	for (int tc = 1; tc <= T; ++tc) {
 		person.clear();
 		stair.clear();
-		int n;
-		cin >> n;
+		scanf("%d", &n);
 		for (int i = 0; i < n; ++i) {
 			for (int j = 0; j < n; ++j) {
-				int x; cin >> x;
-				if (x == 1)
-					person.push_back( {i, j, 0, 0} );
-				else if (x > 1)
-					stair.push_back( {i, j, x} );
+				int x; scanf("%d", &x);
+				if (x == 1) person.push_back( {i, j, 0, 0} );
+				else if (x > 1) stair.push_back( {i, j, x} );
 			}
 		}
-		for (int i = 0; i < person.size(); ++i) {
-			person[i].d1 = abs(stair[0].x - person[i].x) +
-						abs(stair[0].y - person[i].y);
-			person[i].d2 = abs(stair[1].x - person[i].x) +
-						abs(stair[1].y - person[i].y);
+		for (auto& p : person) {
+			p.t1 = abs(p.x - stair[0].x) + abs(p.y - stair[0].y);
+			p.t2 = abs(p.x - stair[1].x) + abs(p.y - stair[1].y);
 		}
 		ans = 987654321;
 		dfs(0);
-		cout << "#" << tc << " " << ans << "\n";
+		printf("#%d %d\n", tc, ans);
 	}
 	return 0;
 }
