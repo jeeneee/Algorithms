@@ -6,7 +6,7 @@
 //  Copyright © 2019 장우진. All rights reserved.
 //
 
-#i#include <iostream>
+#include <iostream>
 #include <algorithm>
 #include <climits>
 using namespace std;
