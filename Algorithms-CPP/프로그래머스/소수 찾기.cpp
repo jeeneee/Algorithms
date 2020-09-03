@@ -56,3 +56,34 @@ int main() {
 	cout << solution(numbers) << endl;
 	return 0;
 }
+
+/* next_permutation */
+
+#include <string>
+#include <vector>
+#include <set>
+#include <algorithm>
+using namespace std;
+
+bool isPrime(int x) {
+    if (x == 2) return true;
+    if (x < 2 || x % 2 == 0) return false;
+    for (int i = 3; i * i <= x; i += 2)
+        if (x % i == 0) return false;
+    return true;
+}
+
+int solution(string numbers) {
+    sort(numbers.begin(), numbers.end());
+    set<int> s;
+    do {
+        string str_num;
+        for (int i = 0; i < numbers.size(); ++i) {
+            str_num = numbers.substr(0, i+1);
+            int num = stoi(str_num);
+            if (!s.count(num) && isPrime(num))
+                s.insert(num);
+        }
+    } while (next_permutation(numbers.begin(), numbers.end()));
+    return s.size();
+}
