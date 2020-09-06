@@ -13,26 +13,30 @@
 
 using namespace std;
 
-bool cmp(const pair<double, int>& a, const pair<double, int>& b) {
-	if (a.first == b.first) return a.second < b.second;
-	return a.first > b.first;
+typedef pair<int, pair<int, int>> pipii;
+typedef long long ll;
+
+bool cmp(const pipii& a, const pipii& b) {
+    ll temp = (ll)a.second.first * b.second.second -
+        (ll)a.second.second * b.second.first;
+    if (temp == 0) return a.first < b.first;
+    return temp > 0;
 }
 
 vector<int> solution(int N, vector<int> stages) {
     vector<int> answer;
-	vector<pair<double, int>> prop;
-	sort(stages.begin(), stages.end());
-	for (int i = 1, j = 0; i <= N; ++i) {
-		while (j < stages.size() && stages[j] < i) ++j;
-		int cnt = 0;
-		for (int k = j; k < stages.size(); ++k)
-			if (stages[k] == i) ++cnt;
-		if (cnt == 0) prop.push_back( {0, i} );
-		else prop.push_back( {(double)cnt/(stages.size()-j), i} );
-	}
-	sort(prop.begin(), prop.end(), cmp);
-	for (auto& a : prop)
-		answer.push_back(a.second);
+    vector<pipii> prob;
+    sort(stages.begin(), stages.end());
+    for (int i = 1, j = 0; i <= N; ++i) {
+        while (j < stages.size() && stages[j] < i) j++;
+        int cnt = 0;
+        for (int k = j; k < stages.size(); ++k)
+            if (stages[k] == i) cnt++;
+        prob.push_back({ i, { cnt, stages.size() - j } });
+    }
+    sort(prob.begin(), prob.end(), cmp);
+    for (int i = 0; i < prob.size(); ++i)
+        answer.push_back(prob[i].first);
     return answer;
 }
 
