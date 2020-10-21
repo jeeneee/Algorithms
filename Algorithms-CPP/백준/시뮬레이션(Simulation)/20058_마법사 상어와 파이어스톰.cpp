@@ -15,7 +15,7 @@ using namespace std;
 
 const int dr[] = { 0, 1, 0, -1 };
 const int dc[] = { 1, 0, -1, 0 };
-const int MAX = 4096;
+const int MAX = 64;
 int map[MAX][MAX];
 int mapSize;
 int sum, maxCnt;
